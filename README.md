@@ -1,12 +1,17 @@
 # RESULTS
 ## Environments
+- python version: 3.8.8
+- espnet version: 0.10.5a1 (latest)
+- pytorch version: 1.10.0 cuda10.2
+<del>
+## Environments
 - date: `Tue Mar 23 10:03:49 EDT 2021`
 - python version: `3.8.5 (default, Sep  4 2020, 07:30:14)  [GCC 7.3.0]`
 - espnet version: `espnet 0.9.8`
 - pytorch version: `pytorch 1.7.1`
 - Git hash: `dcb5bdb2ffa34a9f44255c0b073759c5b9b3f86e`
   - Commit date: `Sat Mar 13 10:16:16 2021 -0500`
-
+</del>
 ## asr_train_asr_raw_en_bpe5000
 - https://zenodo.org/record/4630406
 ### WER
