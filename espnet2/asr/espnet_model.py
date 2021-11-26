@@ -310,7 +310,6 @@ class ESPnetASRModel(AbsESPnetModel):
         ys_pad: torch.Tensor,
         ys_pad_lens: torch.Tensor,
     ):
-        
         loss_rnnt, _ = self.rnnt_decoder(encoder_out, encoder_out_lens, ys_pad, ys_pad_lens)
         
         cer_rnnt, wer_rnnt = None, None

@@ -22,4 +22,4 @@ export NCCL_SOCKET_IFNAME="^lo,docker,virbr,vmnet,vboxnet"
 
 # NOTE(kamo): Source at the last to overwrite the setting
 . local/path.sh
-export PYTHONPATH=`pwd`:$PYTHONPATH
+# export PYTHONPATH=$PWD:$PYTHONPATH

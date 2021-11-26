@@ -1,7 +1,7 @@
 # This configuration requires TITAN RTX (24GB) x 4 GPUs It takes about XX days.
 batch_type: numel
-batch_bins: 2000000
-accum_grad: 4
+batch_bins: 8000000
+accum_grad: 8
 max_epoch: 20
 patience: none
 init: none
@@ -43,7 +43,7 @@ ctc_conf:
     ignore_nan_grad: true
 
 rnnt_conf:
-    decoder_output_size: 256
+    decoder_output_size: 512
     decoder_layers: 2
     decoder_type: "lstm"
     joint_space_size: 512
@@ -52,17 +52,25 @@ rnnt_conf:
 
 model_conf:
     att_weight: 0.0
-    ctc_weight: 0.5
+    ctc_weight: 0.0
     rnnt_weight: 1.0
     lsm_weight: 0.1
     length_normalized_loss: false
 
-optim: adam
+# optim: adam
+# optim_conf:
+#     lr: 0.0015
+# scheduler: warmuplr
+# scheduler_conf:
+#     warmup_steps: 25000
+#     warmup_ratio: 0.25
+optim: adadelta
 optim_conf:
-    lr: 0.0015
-scheduler: warmuplr
-scheduler_conf:
-    warmup_steps: 25000
+    lr: 1.0
+    rho: 0.95
+    eps: 1.0e-08 # 1e-6 + eps decay (TODO)
+    weight_decay: 0
+init: xavier_uniform
 
 frontend_conf:
   n_fft: 512
