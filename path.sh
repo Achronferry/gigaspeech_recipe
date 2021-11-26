@@ -1,9 +1,10 @@
-MAIN_ROOT=~/espnet
-KALDI_ROOT=/GPFS/data/chenyuyang/kaldi
+# MAIN_ROOT=~/espnet
+# KALDI_ROOT=/GPFS/data/chenyuyang/kaldi
 
-export PATH=$PWD/utils/:$KALDI_ROOT/tools/openfst/bin:$PATH
-[ ! -f $KALDI_ROOT/tools/config/common_path.sh ] && echo >&2 "The standard file $KALDI_ROOT/tools/config/common_path.sh is not present -> Exit!" && exit 1
-. $KALDI_ROOT/tools/config/common_path.sh
+# export PATH=$KALDI_ROOT/tools/openfst/bin:$PATH
+export PATH=$PWD/utils/:$PATH
+# [ ! -f $KALDI_ROOT/tools/config/common_path.sh ] && echo >&2 "The standard file $KALDI_ROOT/tools/config/common_path.sh is not present -> Exit!" && exit 1
+# . $KALDI_ROOT/tools/config/common_path.sh
 export LC_ALL=C
 
 # . "${MAIN_ROOT}"/tools/activate_python.sh && . "${MAIN_ROOT}"/tools/extra_path.sh
