@@ -89,12 +89,13 @@ class RNNT(torch.nn.Module):
             odim, encoder_output_size, decoder_output_size, joint_space_size, joint_activation_type
         )
 
-        from warprnnt_pytorch import RNNTLoss
+        # from warprnnt_pytorch import RNNTLoss
+        from transducer_loss.transducer_loss import RNNTLoss
         self.transducer_loss = RNNTLoss(
             blank=blank_id,
             reduction=('mean' if reduce else 'none'),
         )
-        
+
 
         self.default_parameters()
 
@@ -129,7 +130,7 @@ class RNNT(torch.nn.Module):
             set_forget_bias_to_one(getattr(self.dec.decoder[i], "bias_ih_l0"))
             set_forget_bias_to_one(getattr(self.dec.decoder[i], "bias_hh_l0"))
 
-        
+
 
 
 
@@ -165,7 +166,7 @@ class RNNT(torch.nn.Module):
 
     def loss_fn(self, th_pred, th_target, th_ilen, th_olen) -> torch.Tensor:
         raise NotImplementedError
-    
+
     def forward(self, hs_pad, hlens, ys_pad, ys_lens):
         """Calculate RNNT loss.
 

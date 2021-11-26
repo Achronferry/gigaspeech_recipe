@@ -5,9 +5,9 @@ set -e
 set -u
 set -o pipefail
 
-train_set="gigaspeech_train_m"
-valid_set="gigaspeech_dev"
-test_sets="gigaspeech_dev gigaspeech_test"
+train_set="train"
+valid_set="dev"
+test_sets="dev test"
 
 asr_config=conf/tuning/train_asr_conformer6_n_fft512_hop_length256_rnnt.yaml
 lm_config=conf/train_lm.yaml
@@ -20,9 +20,9 @@ speed_perturb_factors=""
 ./asr.sh \
     --audio_format flac.ark \
     --lang en \
-    --ngpu 4 \
-    --nj 128 \
-    --inference_nj 256 \
+    --ngpu 1 \
+    --nj 8 \
+    --inference_nj 8 \
     --use_lm false \
     --nbpe 5000 \
     --max_wav_duration 30 \

@@ -1,6 +1,6 @@
 # This configuration requires TITAN RTX (24GB) x 4 GPUs It takes about XX days.
 batch_type: numel
-batch_bins: 8000000
+batch_bins: 80000
 accum_grad: 8
 max_epoch: 20
 patience: none
