@@ -52,7 +52,7 @@ rnnt_conf:
 
 model_conf:
     att_weight: 0.0
-    ctc_weight: 0.0
+    ctc_weight: 0.5
     rnnt_weight: 1.0
     lsm_weight: 0.1
     length_normalized_loss: false
