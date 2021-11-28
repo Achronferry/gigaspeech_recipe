@@ -1,0 +1,6 @@
+# decoding parameters
+batch_size: 1
+beam_size: 20
+beam_search_conf:
+  search_type: default
+  score_norm: true

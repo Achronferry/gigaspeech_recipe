@@ -1,0 +1,1 @@
+../TEMPLATE/espnet2/asr.sh

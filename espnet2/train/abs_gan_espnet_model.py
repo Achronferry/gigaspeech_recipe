@@ -10,7 +10,7 @@ from typing import Union
 
 import torch
 
-from espnet2.train.abs_espnet_model import AbsESPnetModel
+from espnet2.asr.abs_espnet_model import AbsESPnetModel
 
 
 class AbsGANESPnetModel(AbsESPnetModel, torch.nn.Module, ABC):

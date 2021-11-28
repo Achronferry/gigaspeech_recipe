@@ -9,7 +9,7 @@ import torch
 from typeguard import check_argument_types
 from typeguard import check_return_type
 
-from espnet.nets.pytorch_backend.nets_utils import pad_list
+from espnet2.nets.nets_utils import pad_list
 
 
 class CommonCollateFn:

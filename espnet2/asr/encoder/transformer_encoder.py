@@ -8,23 +8,23 @@ from typing import Tuple
 import torch
 from typeguard import check_argument_types
 
-from espnet.nets.pytorch_backend.nets_utils import make_pad_mask
-from espnet.nets.pytorch_backend.transformer.attention import MultiHeadedAttention
-from espnet.nets.pytorch_backend.transformer.embedding import PositionalEncoding
-from espnet.nets.pytorch_backend.transformer.encoder_layer import EncoderLayer
-from espnet.nets.pytorch_backend.transformer.layer_norm import LayerNorm
-from espnet.nets.pytorch_backend.transformer.multi_layer_conv import Conv1dLinear
-from espnet.nets.pytorch_backend.transformer.multi_layer_conv import MultiLayeredConv1d
-from espnet.nets.pytorch_backend.transformer.positionwise_feed_forward import (
+from espnet2.nets.nets_utils import make_pad_mask
+from espnet2.nets.transformer.attention import MultiHeadedAttention
+from espnet2.nets.transformer.embedding import PositionalEncoding
+from espnet2.nets.transformer.encoder_layer import EncoderLayer
+from espnet2.nets.transformer.layer_norm import LayerNorm
+from espnet2.nets.transformer.multi_layer_conv import Conv1dLinear
+from espnet2.nets.transformer.multi_layer_conv import MultiLayeredConv1d
+from espnet2.nets.transformer.positionwise_feed_forward import (
     PositionwiseFeedForward,  # noqa: H301
 )
-from espnet.nets.pytorch_backend.transformer.repeat import repeat
-from espnet.nets.pytorch_backend.transformer.subsampling import check_short_utt
-from espnet.nets.pytorch_backend.transformer.subsampling import Conv2dSubsampling
-from espnet.nets.pytorch_backend.transformer.subsampling import Conv2dSubsampling2
-from espnet.nets.pytorch_backend.transformer.subsampling import Conv2dSubsampling6
-from espnet.nets.pytorch_backend.transformer.subsampling import Conv2dSubsampling8
-from espnet.nets.pytorch_backend.transformer.subsampling import TooShortUttError
+from espnet2.nets.transformer.repeat import repeat
+from espnet2.nets.transformer.subsampling import check_short_utt
+from espnet2.nets.transformer.subsampling import Conv2dSubsampling
+from espnet2.nets.transformer.subsampling import Conv2dSubsampling2
+from espnet2.nets.transformer.subsampling import Conv2dSubsampling6
+from espnet2.nets.transformer.subsampling import Conv2dSubsampling8
+from espnet2.nets.transformer.subsampling import TooShortUttError
 from espnet2.asr.encoder.abs_encoder import AbsEncoder
 
 
