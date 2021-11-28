@@ -282,6 +282,8 @@ class Trainer:
                         options=trainer_options,
                         distributed_option=distributed_option,
                     )
+            else:
+                all_steps_are_invalid = False
 
             if "VALID" not in dry_run:
                 with reporter.observe("valid") as sub_reporter:
@@ -328,8 +330,6 @@ class Trainer:
                     reporter.matplotlib_plot(output_dir / "images")
                 if summary_writer is not None:
                     reporter.tensorboard_add_scalar(summary_writer)
-                if trainer_options.use_wandb:
-                    reporter.wandb_log()
 
                 # 4-5. Save/Update the checkpoint
                 save_model(model, optimizers, schedulers, scaler, reporter, iepoch, output_dir)
@@ -337,7 +337,7 @@ class Trainer:
                 # 6.1 create sym link if it is the best
                 best_epoch, _improved = update_best(trainer_options, reporter, iepoch, output_dir)
                 if len(_improved) == 0:
-                    logging.info("There are no improvements in this epoch")
+                    logging.warning("There are no improvements in this epoch")
                 else:
                     logging.info("The best model has been updated: " + ", ".join(_improved))
                 
@@ -619,8 +619,6 @@ class Trainer:
                 logging.info(reporter.log_message(-log_interval))
                 if summary_writer is not None:
                     reporter.tensorboard_add_scalar(summary_writer, -log_interval)
-                if use_wandb:
-                    reporter.wandb_log()
 
             # debug
             # for name, param in model.named_parameters():
@@ -755,8 +753,4 @@ class Trainer:
                             f"{k}_{id_}", fig, reporter.get_epoch()
                         )
 
-                    if options.use_wandb:
-                        import wandb
-
-                        wandb.log({f"attention plot/{k}_{id_}": wandb.Image(fig)})
             reporter.next()

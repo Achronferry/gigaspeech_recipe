@@ -26,6 +26,7 @@
 - CUDA memory is unstable:
   - normally 6200MB; sometimes 9800MB
 - fps=1.5*1e6(max in 11G cuda mem)
+- VALID time 10min; train time unknown
 - streaming
 - [W NNPACK.cpp:79] Could not initialize NNPACK! Reason: Unsupported hardware.
 
