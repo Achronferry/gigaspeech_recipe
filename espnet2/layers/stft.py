@@ -7,8 +7,7 @@ import torch
 from torch_complex.tensor import ComplexTensor
 from typeguard import check_argument_types
 
-from espnet.nets.pytorch_backend.nets_utils import make_pad_mask
-from espnet2.enh.layers.complex_utils import is_complex
+from espnet2.nets.nets_utils import make_pad_mask
 from espnet2.layers.inversible_interface import InversibleInterface
 import librosa
 import numpy as np
@@ -18,6 +17,10 @@ is_torch_1_9_plus = LooseVersion(torch.__version__) >= LooseVersion("1.9.0")
 
 is_torch_1_7_plus = LooseVersion(torch.__version__) >= LooseVersion("1.7")
 
+def is_torch_complex_tensor(c):
+    return is_torch_1_9_plus and torch.is_complex(c)
+def is_complex(c):
+    return isinstance(c, ComplexTensor) or is_torch_complex_tensor(c)
 
 class Stft(torch.nn.Module, InversibleInterface):
     def __init__(
@@ -163,7 +166,10 @@ class Stft(torch.nn.Module, InversibleInterface):
                 pad = self.win_length // 2
                 ilens = ilens + 2 * pad
 
-            olens = (ilens - self.win_length) // self.hop_length + 1
+            if is_torch_1_9_plus:
+                olens = torch.div(ilens - self.win_length, self.hop_length, rounding_mode="floor") + 1
+            else:
+                olens = (ilens - self.win_length) // self.hop_length + 1
             output.masked_fill_(make_pad_mask(olens, output, 1), 0.0)
         else:
             olens = None

@@ -4,24 +4,24 @@ from typing import List
 
 import torch
 
-from espnet.nets.pytorch_backend.rnn.attentions import AttAdd
-from espnet.nets.pytorch_backend.rnn.attentions import AttCov
-from espnet.nets.pytorch_backend.rnn.attentions import AttCovLoc
-from espnet.nets.pytorch_backend.rnn.attentions import AttDot
-from espnet.nets.pytorch_backend.rnn.attentions import AttForward
-from espnet.nets.pytorch_backend.rnn.attentions import AttForwardTA
-from espnet.nets.pytorch_backend.rnn.attentions import AttLoc
-from espnet.nets.pytorch_backend.rnn.attentions import AttLoc2D
-from espnet.nets.pytorch_backend.rnn.attentions import AttLocRec
-from espnet.nets.pytorch_backend.rnn.attentions import AttMultiHeadAdd
-from espnet.nets.pytorch_backend.rnn.attentions import AttMultiHeadDot
-from espnet.nets.pytorch_backend.rnn.attentions import AttMultiHeadLoc
-from espnet.nets.pytorch_backend.rnn.attentions import AttMultiHeadMultiResLoc
-from espnet.nets.pytorch_backend.rnn.attentions import NoAtt
-from espnet.nets.pytorch_backend.transformer.attention import MultiHeadedAttention
+from espnet2.nets.rnn.attentions import AttAdd
+from espnet2.nets.rnn.attentions import AttCov
+from espnet2.nets.rnn.attentions import AttCovLoc
+from espnet2.nets.rnn.attentions import AttDot
+from espnet2.nets.rnn.attentions import AttForward
+from espnet2.nets.rnn.attentions import AttForwardTA
+from espnet2.nets.rnn.attentions import AttLoc
+from espnet2.nets.rnn.attentions import AttLoc2D
+from espnet2.nets.rnn.attentions import AttLocRec
+from espnet2.nets.rnn.attentions import AttMultiHeadAdd
+from espnet2.nets.rnn.attentions import AttMultiHeadDot
+from espnet2.nets.rnn.attentions import AttMultiHeadLoc
+from espnet2.nets.rnn.attentions import AttMultiHeadMultiResLoc
+from espnet2.nets.rnn.attentions import NoAtt
+from espnet2.nets.transformer.attention import MultiHeadedAttention
 
 
-from espnet2.train.abs_espnet_model import AbsESPnetModel
+from espnet2.asr.abs_espnet_model import AbsESPnetModel
 
 
 @torch.no_grad()

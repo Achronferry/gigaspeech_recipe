@@ -5,20 +5,21 @@ set -u
 set -o pipefail
 
 log() {
-    local fname=${BASH_SOURCE[1]##*/}
+    local fname=${1##*/}
     echo -e "$(date '+%Y-%m-%dT%H:%M:%S') (${fname}:${BASH_LINENO[0]}:${FUNCNAME[1]}) $*"
 }
 SECONDS=0
 
 stage=1
 stop_stage=5000
-data_dir="data"
+data_dir=`pwd`/data # use abs path
+train_set_type="M" # use train_M
 
-log "$0 $*"
 . utils/parse_options.sh
+log "Running data generation($0): stage=($stage-$stop_stage) at data($data_dir) with train_set($train_set_type)"
 
 # base url for downloads.
-giga_repo=https://github.com/SpeechColab/GigaSpeech.git
+#giga_repo=https://github.com/SpeechColab/GigaSpeech.git
 
 if [ $# -ne 0 ]; then
     log "Error: No positional arguments are required."
@@ -37,8 +38,11 @@ fi
 if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     if [ -d "${GIGASPEECH}/audio" ] && [ -f "${GIGASPEECH}/GigaSpeech.json" ]; then
 	log "GIGASPEECH found in ${GIGASPEECH}."
-	rm -fr GigaSpeech
-	git clone $giga_repo
+    git submodule init
+    git submodule sync
+    git submodule update
+	#rm -fr GigaSpeech
+	#git clone $giga_repo
     else
 	echo "Valid GIGASPEECH data not found in ${GIGASPEECH}."
 	echo "Please follow the instruction in https://github.com/SpeechColab/GigaSpeech#dataset-download"
@@ -53,7 +57,7 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
     abs_data_dir=$(readlink -f ${data_dir})
     log "making Kaldi format data directory in ${abs_data_dir}"
     pushd GigaSpeech
-    ./toolkits/kaldi/gigaspeech_data_prep.sh --train-subset M ${GIGASPEECH} ${abs_data_dir}
+    ./toolkits/kaldi/gigaspeech_data_prep.sh --train-subset $train_set_type ${GIGASPEECH} ${abs_data_dir}
     popd
 fi
 

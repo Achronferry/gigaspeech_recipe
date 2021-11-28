@@ -1,0 +1,3 @@
+[submodule "GigaSpeech"]
+	path = GigaSpeech
+	url = git@github.com:SpeechColab/GigaSpeech.git

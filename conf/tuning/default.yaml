@@ -1,0 +1,81 @@
+batch_type: numel
+batch_bins: 2000000 # 1080ti/2080ti
+# batch_bins: 10000
+batch_per_gpu: true
+accum_grad: 4
+max_epoch: 40
+patience: none
+num_workers: 3
+
+best_model_criterion:
+-   - valid
+    - loss
+    - max
+keep_nbest_models: 5
+# log_interval: 5
+
+encoder: conformer
+encoder_conf:
+    output_size: 256
+    attention_heads: 4
+    linear_units: 1024
+    num_blocks: 16
+    dropout_rate: 0.1
+    positional_dropout_rate: 0.1
+    attention_dropout_rate: 0.1
+    input_layer: conv2d
+    normalize_before: true
+    macaron_style: true
+    pos_enc_layer_type: "rel_pos"
+    selfattention_layer_type: "rel_selfattn"
+    activation_type: "swish"
+    use_cnn_module:  true
+    cnn_module_kernel: 31
+
+decoder: rnn
+decoder_conf:
+    rnn_type: lstm # no bilstm!!!
+    num_layers: 1
+    hidden_size: 640
+    dropout_rate: 0.1
+    dropout_rate_embed: 0.1
+    normalize: true
+
+joint_network: base
+joint_network_conf:
+    joint_space_size: 512
+    joint_activation_type: tanh
+
+
+model_conf:
+    transducer_loss_type: warp-transducer
+
+
+optim: adam
+optim_conf:
+    lr: 0.0015
+init: xavier_uniform
+scheduler: warmuplr
+scheduler_conf:
+    warmup_steps: 25000
+    warmup_ratio: 0.2
+
+frontend_conf:
+  n_fft: 512
+  hop_length: 256
+
+specaug: specaug
+specaug_conf:
+    apply_time_warp: true
+    time_warp_window: 5
+    time_warp_mode: bicubic
+    apply_freq_mask: true
+    freq_mask_width_range:
+    - 0
+    - 30
+    num_freq_mask: 2
+    apply_time_mask: true
+    time_mask_width_range:
+    - 0
+    - 40
+    num_time_mask: 2

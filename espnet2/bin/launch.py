@@ -9,7 +9,7 @@ import subprocess
 import sys
 import uuid
 
-from espnet.utils.cli_utils import get_commandline_args
+from espnet2.utils.cli_utils import get_commandline_args
 from espnet2.utils.types import str2bool
 from espnet2.utils.types import str_or_none
 
@@ -30,6 +30,12 @@ def get_parser():
         default="run.log",
     )
     parser.add_argument(
+        "--log_to_stdout",
+        help="tail -f to run.log in stdout",
+        type=str2bool,
+        default=True,
+    )
+    parser.add_argument(
         "--max_num_log_files",
         help="The maximum number of log-files to be kept",
         default=1000,
@@ -39,6 +45,7 @@ def get_parser():
     )
     egroup = parser.add_mutually_exclusive_group()
     egroup.add_argument("--num_nodes", type=int, default=1, help="The number of nodes")
+    egroup.add_argument("--niter_per_gpu", type=int, default=3, help="The number of cpu core in one gpu")
     egroup.add_argument(
         "--host",
         type=str,
@@ -92,7 +99,7 @@ def get_parser():
 def main(cmd=None):
     logfmt = "%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s"
     logging.basicConfig(level=logging.INFO, format=logfmt)
-    logging.info(get_commandline_args())
+    # logging.info(get_commandline_args())
 
     parser = get_parser()
     args = parser.parse_args(cmd)
@@ -278,7 +285,7 @@ EOF
                 "--gpu",
                 str(args.ngpu),
                 "--num_threads",
-                str(max(args.ngpu, 1)),
+                str(args.niter_per_gpu),
                 "--num_nodes",
                 str(args.num_nodes),
                 args.log,
@@ -316,7 +323,7 @@ EOF
                 "--gpu",
                 str(args.ngpu),
                 "--num_threads",
-                str(max(args.ngpu, 1)),
+                str(args.niter_per_gpu),
                 # Make sure scheduler setting, i.e. conf/queue.conf
                 # so that --num_nodes requires 1process-per-node
                 "--num_nodes",
@@ -347,6 +354,13 @@ EOF
         processes.append(process)
 
     logging.info(f"log file: {args.log}")
+    for p in processes:
+        logging.info(f"slurm.pl [{process.pid}]: " + " ".join(process.args))
+    if args.log_to_stdout:
+        from espnet2.bin import watch_log
+        import multiprocessing as MP
+        train_log = MP.Process(target=watch_log, args=(args.log,))
+        train_log.start()
 
     failed = False
     while any(p.returncode is None for p in processes):
@@ -358,28 +372,25 @@ EOF
                 try:
                     process.wait(0.5)
                 except subprocess.TimeoutExpired:
+                    # logging.warning(f"{process} timeout")
                     pass
 
                 if process.returncode is not None and process.returncode != 0:
                     failed = True
 
+    return_code = 0
     for process in processes:
         if process.returncode != 0:
-            print(
-                subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd),
-                file=sys.stderr,
-            )
-            p = Path(args.log)
-            if p.exists():
-                with p.open() as f:
-                    lines = list(f)
-                raise RuntimeError(
-                    f"\n################### The last 1000 lines of {args.log} "
-                    f"###################\n" + "".join(lines[-1000:])
-                )
-            else:
-                raise RuntimeError
+            logging.error(f"Failed: {Path(args.log)}")
+            return_code = process.returncode
+            break
+        
+    if args.log_to_stdout:
+        train_log.terminate() # finish log
+    return return_code
 
 
 if __name__ == "__main__":
-    main()
+    return_code = main()
+    if return_code:
+        raise RuntimeError

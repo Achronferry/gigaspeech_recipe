@@ -29,6 +29,7 @@ class WarmupLR(_LRScheduler, AbsBatchStepScheduler):
         optimizer: torch.optim.Optimizer,
         warmup_steps: Union[int, float] = 25000,
         last_epoch: int = -1,
+        *args, **kwargs, # for warmup_ratio/warmup_epoch
     ):
         assert check_argument_types()
         self.warmup_steps = warmup_steps

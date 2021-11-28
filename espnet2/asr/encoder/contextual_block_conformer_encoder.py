@@ -5,24 +5,24 @@ Created on Sat Aug 21 17:27:16 2021.
 @author: Keqi Deng (UCAS)
 """
 
-from espnet.nets.pytorch_backend.conformer.convolution import ConvolutionModule
-from espnet.nets.pytorch_backend.conformer.contextual_block_encoder_layer import (
+from espnet2.nets.conformer.convolution import ConvolutionModule
+from espnet2.nets.conformer.contextual_block_encoder_layer import (
     ContextualBlockEncoderLayer,  # noqa: H301
 )
-from espnet.nets.pytorch_backend.nets_utils import (
+from espnet2.nets.nets_utils import (
     make_pad_mask,  # noqa: H301
     get_activation,  # noqa: H301
 )
-from espnet.nets.pytorch_backend.transformer.attention import MultiHeadedAttention
-from espnet.nets.pytorch_backend.transformer.embedding import StreamPositionalEncoding
-from espnet.nets.pytorch_backend.transformer.layer_norm import LayerNorm
-from espnet.nets.pytorch_backend.transformer.multi_layer_conv import Conv1dLinear
-from espnet.nets.pytorch_backend.transformer.multi_layer_conv import MultiLayeredConv1d
-from espnet.nets.pytorch_backend.transformer.positionwise_feed_forward import (
+from espnet2.nets.transformer.attention import MultiHeadedAttention
+from espnet2.nets.transformer.embedding import StreamPositionalEncoding
+from espnet2.nets.transformer.layer_norm import LayerNorm
+from espnet2.nets.transformer.multi_layer_conv import Conv1dLinear
+from espnet2.nets.transformer.multi_layer_conv import MultiLayeredConv1d
+from espnet2.nets.transformer.positionwise_feed_forward import (
     PositionwiseFeedForward,  # noqa: H301
 )
-from espnet.nets.pytorch_backend.transformer.repeat import repeat
-from espnet.nets.pytorch_backend.transformer.subsampling_without_posenc import (
+from espnet2.nets.transformer.repeat import repeat
+from espnet2.nets.transformer.subsampling_without_posenc import (
     Conv2dSubsamplingWOPosEnc,  # noqa: H301
 )
 from espnet2.asr.encoder.abs_encoder import AbsEncoder

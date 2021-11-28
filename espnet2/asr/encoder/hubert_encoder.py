@@ -21,8 +21,8 @@ from typeguard import check_argument_types
 from typing import Optional
 from typing import Tuple
 
-from espnet.nets.pytorch_backend.nets_utils import make_pad_mask
-from espnet.nets.pytorch_backend.transformer.layer_norm import LayerNorm
+from espnet2.nets.nets_utils import make_pad_mask
+from espnet2.nets.transformer.layer_norm import LayerNorm
 from espnet2.asr.encoder.abs_encoder import AbsEncoder
 
 
