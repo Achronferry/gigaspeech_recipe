@@ -12,7 +12,7 @@ best_model_criterion:
     - loss
     - max
 keep_nbest_models: 5
-# log_interval: 5
+log_interval: 5
 
 encoder: conformer
 encoder_conf:
@@ -48,7 +48,7 @@ joint_network_conf:
 
 
 model_conf:
-    transducer_loss_type: warp-transducer
+    transducer_loss_type: warp-transducer-jit
 
 
 optim: adam

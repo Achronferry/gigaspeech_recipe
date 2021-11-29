@@ -197,13 +197,11 @@ rnntStatus_t cost_and_grad_gpu(const float* const acts,
         label_lengths == nullptr ||
         input_lengths == nullptr)
         return RNNT_STATUS_INVALID_VALUE;
-    return RNNT_STATUS_INVALID_VALUE;
+    // return RNNT_STATUS_INVALID_VALUE;
 
-    /*
     return compute_cost_and_score(acts, grads, costs, pad_labels, 
             label_lengths, input_lengths, alphabet_size, minibatch, 
             maxT, maxU, blank, fastemit_lambda, stream, gpu_workspace);
-    */
 }
 
 rnntStatus_t score_forward_gpu(const float* const acts,
@@ -228,12 +226,10 @@ rnntStatus_t score_forward_gpu(const float* const acts,
         input_lengths == nullptr)
         return RNNT_STATUS_INVALID_VALUE;
     
-    return RNNT_STATUS_INVALID_VALUE;
+    // return RNNT_STATUS_INVALID_VALUE;
 
-    /*
     return compute_cost_and_score(acts, nullptr, costs, pad_labels, 
             label_lengths, input_lengths, alphabet_size, minibatch,
             maxT, maxU, blank, fastemit_lambda, stream, gpu_workspace);
-    */
 }
 
