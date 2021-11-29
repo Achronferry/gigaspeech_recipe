@@ -101,3 +101,76 @@ def average_nbest_models(
         if sym_op.is_symlink() or sym_op.exists():
             sym_op.unlink()
         sym_op.symlink_to(op.name)
+
+@torch.no_grad()
+def save_model(model, optimizers, schedulers, scaler, reporter, iepoch, output_dir) -> None:
+    """
+    checkpoint.pth : resume from
+    *epoch.pth: model.dict
+    latest.pth: -> link to last *epoch.pth
+    """
+    # 4. Save/Update the checkpoint
+    torch.save(
+        {
+            "model": model.state_dict(),
+            "reporter": reporter.state_dict(),
+            "optimizers": [o.state_dict() for o in optimizers],
+            "schedulers": [
+                s.state_dict() if s is not None else None
+                for s in schedulers
+            ],
+            "scaler": scaler.state_dict() if scaler is not None else None,
+        },
+        output_dir / "checkpoint.pth",
+        _use_new_zipfile_serialization=False
+    )
+
+    # 5. Save and log the model and update the link to the best model
+    torch.save(model.state_dict(), output_dir / f"{iepoch}epoch.pth", _use_new_zipfile_serialization=False)
+
+    # Creates a sym link latest.pth -> {iepoch}epoch.pth
+    p = output_dir / "latest.pth"
+    if p.is_symlink() or p.exists():
+        p.unlink()
+    p.symlink_to(f"{iepoch}epoch.pth")
+
+@torch.no_grad()
+def update_best(trainer_options, reporter, iepoch, output_dir):
+    """trainer.py:369"""
+    best_epoch = None
+    _improved = []
+    for _phase, k, _mode in trainer_options.best_model_criterion:
+        # e.g. _phase, k, _mode = "train", "loss", "min"
+        if reporter.has(_phase, k):
+            best_epoch = reporter.get_best_epoch(_phase, k, _mode)
+            # Creates sym links if it's the best result
+            if best_epoch == iepoch:
+                p = output_dir / f"{_phase}.{k}.best.pth"
+                if p.is_symlink() or p.exists():
+                    p.unlink()
+                p.symlink_to(f"{iepoch}epoch.pth")
+                _improved.append(f"{_phase}.{k}")
+    
+    return best_epoch, _improved
+    
+@torch.no_grad()
+def remove_nbest(trainer_options, reporter, iepoch, output_dir, keep_nbest_models):
+    """trainer.py Stage 6
+    Remove the model files excluding n-best epoch and latest epoch
+    """
+    _removed = []
+    # Get the union set of the n-best among multiple criterion
+    nbests = set().union(
+        *[
+            set(reporter.sort_epochs(ph, k, m)[:keep_nbest_models])
+            for ph, k, m in trainer_options.best_model_criterion
+            if reporter.has(ph, k)
+        ]
+    )
+    for e in range(1, iepoch):
+        p = output_dir / f"{e}epoch.pth"
+        if p.exists() and e not in nbests:
+            p.unlink()
+            _removed.append(str(p))
+    
+    return _removed

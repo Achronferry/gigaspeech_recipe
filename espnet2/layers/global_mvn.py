@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from typeguard import check_argument_types
 
-from espnet.nets.pytorch_backend.nets_utils import make_pad_mask
+from espnet2.nets.nets_utils import make_pad_mask
 from espnet2.layers.abs_normalize import AbsNormalize
 from espnet2.layers.inversible_interface import InversibleInterface
 

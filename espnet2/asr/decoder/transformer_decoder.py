@@ -10,25 +10,25 @@ from typing import Tuple
 import torch
 from typeguard import check_argument_types
 
-from espnet.nets.pytorch_backend.nets_utils import make_pad_mask
-from espnet.nets.pytorch_backend.transformer.attention import MultiHeadedAttention
-from espnet.nets.pytorch_backend.transformer.decoder_layer import DecoderLayer
-from espnet.nets.pytorch_backend.transformer.dynamic_conv import DynamicConvolution
-from espnet.nets.pytorch_backend.transformer.dynamic_conv2d import DynamicConvolution2D
-from espnet.nets.pytorch_backend.transformer.embedding import PositionalEncoding
-from espnet.nets.pytorch_backend.transformer.layer_norm import LayerNorm
-from espnet.nets.pytorch_backend.transformer.lightconv import LightweightConvolution
-from espnet.nets.pytorch_backend.transformer.lightconv2d import LightweightConvolution2D
-from espnet.nets.pytorch_backend.transformer.mask import subsequent_mask
-from espnet.nets.pytorch_backend.transformer.positionwise_feed_forward import (
+from espnet2.nets.nets_utils import make_pad_mask
+from espnet2.nets.transformer.attention import MultiHeadedAttention
+from espnet2.nets.transformer.decoder_layer import DecoderLayer
+from espnet2.nets.transformer.dynamic_conv import DynamicConvolution
+from espnet2.nets.transformer.dynamic_conv2d import DynamicConvolution2D
+from espnet2.nets.transformer.embedding import PositionalEncoding
+from espnet2.nets.transformer.layer_norm import LayerNorm
+from espnet2.nets.transformer.lightconv import LightweightConvolution
+from espnet2.nets.transformer.lightconv2d import LightweightConvolution2D
+from espnet2.nets.transformer.mask import subsequent_mask
+from espnet2.nets.transformer.positionwise_feed_forward import (
     PositionwiseFeedForward,  # noqa: H301
 )
-from espnet.nets.pytorch_backend.transformer.repeat import repeat
-from espnet.nets.scorer_interface import BatchScorerInterface
+from espnet2.nets.transformer.repeat import repeat
 from espnet2.asr.decoder.abs_decoder import AbsDecoder
+from espnet2.asr.beam_search.scorer_interface import ScorerInterface
 
 
-class BaseTransformerDecoder(AbsDecoder, BatchScorerInterface):
+class BaseTransformerDecoder(AbsDecoder, ScorerInterface):
     """Base class of Transfomer decoder module.
 
     Args:
@@ -125,9 +125,7 @@ class BaseTransformerDecoder(AbsDecoder, BatchScorerInterface):
         tgt_mask = tgt_mask & m
 
         memory = hs_pad
-        memory_mask = (~make_pad_mask(hlens, maxlen=memory.size(1)))[:, None, :].to(
-            memory.device
-        )
+        memory_mask = (~make_pad_mask(hlens))[:, None, :].to(memory.device)
 
         x = self.embed(tgt)
         x, tgt_mask, memory, memory_mask = self.decoders(
@@ -200,10 +198,8 @@ class BaseTransformerDecoder(AbsDecoder, BatchScorerInterface):
                 The encoder feature that generates ys (n_batch, xlen, n_feat).
 
         Returns:
-            tuple[torch.Tensor, List[Any]]: Tuple of
-                batchfied scores for next token with shape of `(n_batch, n_vocab)`
-                and next state list for ys.
-
+            log prob(score): torch.Tensor `(n_batch, n_vocab)`
+            states: torch.Tensor/List[tensor] `batch, n_dec_layer, ylen, ndim`
         """
         # merge states
         n_batch = len(ys)
@@ -222,7 +218,8 @@ class BaseTransformerDecoder(AbsDecoder, BatchScorerInterface):
         logp, states = self.forward_one_step(ys, ys_mask, xs, cache=batch_state)
 
         # transpose state of [layer, batch] into [batch, layer]
-        state_list = [[states[i][b] for i in range(n_layers)] for b in range(n_batch)]
+        # state_list = [[states[i][b] for i in range(n_layers)] for b in range(n_batch)]
+        state_list = torch.stack(states).transpose(1,0)
         return logp, state_list
 
 

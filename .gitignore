@@ -1,5 +1,46 @@
 documents
 dump
 exp
-GigaSpeech
 data
+conf/slurm.*.conf
+
+## python
+*.so
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+
+# Distribution / packaging
+.Python
+**/build/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+*.egg-info/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+.installed.cfg
+*.egg
+MANIFEST
+
+
+## editor
+shellcheck*
+*.vim
+*.swp
+.vscode*
+
+## log
+slurm-*.out
+*.log
+*.debug
+*debug.*

@@ -45,9 +45,10 @@ def to_bytes(dtype) -> int:
     return int(str(dtype)[-2:]) // 8
 
 
-def model_summary(model: torch.nn.Module) -> str:
+def model_summary(model: torch.nn.Module, model_detail=True) -> str:
     message = "Model structure:\n"
-    message += str(model)
+    if model_detail:
+        message += str(model)
     tot_params = sum(p.numel() for p in model.parameters())
     num_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     percent_trainable = "{:.1f}".format(num_params * 100.0 / tot_params)

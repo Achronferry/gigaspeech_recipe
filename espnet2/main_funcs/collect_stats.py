@@ -17,7 +17,7 @@ from espnet2.fileio.datadir_writer import DatadirWriter
 from espnet2.fileio.npy_scp import NpyScpWriter
 from espnet2.torch_utils.device_funcs import to_device
 from espnet2.torch_utils.forward_adaptor import ForwardAdaptor
-from espnet2.train.abs_espnet_model import AbsESPnetModel
+from espnet2.asr.abs_espnet_model import AbsESPnetModel
 
 
 @torch.no_grad()
@@ -29,6 +29,7 @@ def collect_stats(
     ngpu: Optional[int],
     log_interval: Optional[int],
     write_collected_feats: bool,
+    dry_run: bool = False,
 ) -> None:
     """Perform on collect_stats mode.
 
@@ -51,7 +52,7 @@ def collect_stats(
         sq_dict = defaultdict(lambda: 0)
         count_dict = defaultdict(lambda: 0)
 
-        with DatadirWriter(output_dir / mode) as datadir_writer:
+        with DatadirWriter(output_dir / mode) if dry_run else open("/dev/null") as datadir_writer:
             for iiter, (keys, batch) in enumerate(itr, 1):
                 batch = to_device(batch, "cuda" if ngpu > 0 else "cpu")
 
@@ -110,17 +111,18 @@ def collect_stats(
                     logging.info(f"Niter: {iiter}")
 
         for key in sum_dict:
-            np.savez(
-                output_dir / mode / f"{key}_stats.npz",
-                count=count_dict[key],
-                sum=sum_dict[key],
-                sum_square=sq_dict[key],
-            )
+            if dry_run:
+                np.savez(
+                    output_dir / mode / f"{key}_stats.npz",
+                    count=count_dict[key],
+                    sum=sum_dict[key],
+                    sum_square=sq_dict[key],
+                )
 
         # batch_keys and stats_keys are used by aggregate_stats_dirs.py
-        with (output_dir / mode / "batch_keys").open("w", encoding="utf-8") as f:
+        with (output_dir / mode / "batch_keys").open("w", encoding="utf-8") if dry_run else open("/dev/null", "w")as f:
             f.write(
                 "\n".join(filter(lambda x: not x.endswith("_lengths"), batch)) + "\n"
             )
-        with (output_dir / mode / "stats_keys").open("w", encoding="utf-8") as f:
+        with (output_dir / mode / "stats_keys").open("w", encoding="utf-8") if dry_run else open("/dev/null", "w")as f:
             f.write("\n".join(sum_dict) + "\n")

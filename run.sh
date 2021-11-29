@@ -9,30 +9,44 @@ train_set="train"
 valid_set="dev"
 test_sets="dev test"
 
-asr_config=conf/tuning/train_asr_conformer6_n_fft512_hop_length256_rnnt.yaml
-lm_config=conf/train_lm.yaml
-inference_config=conf/decode_asr.yaml
 
-# speed perturbation related
-# (train_set will be "${train_set}_sp" if speed_perturb_factors is specified)
-speed_perturb_factors=""
+# NOTE: the reason to delete this is that even if we override the inference_config, the local_score_opts wont change!!
 
+# NOTE: do not support args connected by <space>
+# e.g.: --test_sets dev test, will regarded as --test_sets dev test
+args=(
+    ## lang config
+    --lang en
+    # bpe config
+    --nbpe 5000
+    --bpe_train_text data/${train_set}/text
+
+    ## audio config
+    --audio_format flac.ark
+    --speed_perturb_factors "" # no sp
+    --max_wav_duration 30
+
+    # train lm config TODO: remove this
+    --use_lm false
+    --lm_config conf/train_lm.yaml
+
+    # asr infer config
+    --asr_config conf/tuning/default.yaml
+    --inference_config conf/decode/default.yaml
+
+    # asr infer config
+    --inference_nj 64
+    --local_score_opts "--inference_config conf/decode/default.yaml --use_lm false"
+
+    # ddp running
+    --ngpu 1 --num_nodes 8 ## DDP mode, 8X1 GPU
+    # --ngpu 8 ## multi gpu mode
+    # --ngpu 1 ## single gpu mode
+)
+
+## NOTE: override args using `run.sh --asr_config XXX` or modified the args above
 ./asr.sh \
-    --audio_format flac.ark \
-    --lang en \
-    --ngpu 1 \
-    --nj 8 \
-    --inference_nj 8 \
-    --use_lm false \
-    --nbpe 5000 \
-    --max_wav_duration 30 \
-    --speed_perturb_factors "${speed_perturb_factors}" \
-    --asr_config "${asr_config}" \
-    --lm_config "${lm_config}" \
-    --inference_config "${inference_config}" \
     --train_set "${train_set}" \
     --valid_set "${valid_set}" \
     --test_sets "${test_sets}" \
-    --bpe_train_text "data/${train_set}/text" "$@" \
-    --local_score_opts "--inference_config ${inference_config} --use_lm false" \
-    --stage 11
+    "${args[@]}" "$@"

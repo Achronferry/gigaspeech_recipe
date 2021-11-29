@@ -4,21 +4,25 @@ from torch.autograd import Function
 from torch.nn import Module
 from torch.utils.cpp_extension import load
 
-build_dir = 'rnntLoss_cpp'
 import socket
 import tempfile
 import os
-build_dir = os.path.join(tempfile.gettempdir(), build_dir)
+import logging
+import pathlib
+build_dir = os.path.dirname(os.path.abspath(__file__)) + "/rnntLoss_cpp"
 os.makedirs(build_dir, exist_ok=True)
-print("Compiling C++ code to: ", build_dir, flush=True)
+logging.info("Compiling C++ code to: ", build_dir, flush=True)
+logging.info(os.environ["INCLUDEPATH"])
 transducer_loss = load(
     name='transducer_loss',
-    extra_include_paths=["/usr/local/cuda/include"],
+    extra_include_paths=[os.environ["INCLUDEPATH"] + ":/usr/local/cuda/include"],
     sources=[os.path.join(os.path.dirname(__file__), source_file) for source_file in ["transducer_loss.cpp", "detail/gpu_rnnt.cu"]],
     build_directory=build_dir,
     verbose=True
 )
-print ("successfully build rnnt_loss")
+logging.info("successfully build rnnt_loss")
+with open(build_dir + '/complete', 'w') as f:
+    f.write("DONE")
 
 
 class _RNNT(Function):
