@@ -1,5 +1,5 @@
 """Initialize sub package."""
-def setup_logging_config(verbose, prefix="", color=True):
+def setup_logging_config(verbose, prefix="", color=False):
     import logging
     if prefix != "":
         format=f"{prefix} "

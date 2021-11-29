@@ -11,8 +11,10 @@ import logging
 import pathlib
 build_dir = os.path.dirname(os.path.abspath(__file__)) + "/rnntLoss_cpp"
 os.makedirs(build_dir, exist_ok=True)
-logging.info("Compiling C++ code to: ", build_dir, flush=True)
-logging.info(os.environ["INCLUDEPATH"])
+logging.info("Compiling C++ code to: {}".format(build_dir))
+# logging.info(os.environ["INCLUDEPATH"])
+if "INCLUDEPATH" not in os.environ:
+    os.environ["INCLUDEPATH"] = ''
 transducer_loss = load(
     name='transducer_loss',
     extra_include_paths=[os.environ["INCLUDEPATH"] + ":/usr/local/cuda/include"],
@@ -115,6 +117,9 @@ class RNNTLoss(Module):
         act_lens: Tensor of size (batch) containing size of each output sequence from the network
         label_lens: Tensor of (batch) containing label length of each example
         """
+        labels = labels.int()
+        act_lens = act_lens.int()
+        label_lens = label_lens.int()
         if not acts.is_cuda:
             # NOTE manually done log_softmax for CPU version,
             # log_softmax is computed within GPU version.

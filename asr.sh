@@ -37,7 +37,7 @@ niter_per_gpu=3        # num of process using via this gpu
 nj=32                  # The number of parallel jobs.
 inference_nj=32        # The number of parallel jobs in decoding.
 gpu_inference=false    # Whether to perform gpu decoding.
-dumpdir=`pwd`/exp/dump # Directory to dump features.
+dumpdir=`pwd`/dump # Directory to dump features.
 expdir=`pwd`/exp       # Directory to save experiments.
 python=python3         # Specify python to execute espnet commands.
 resume=true            # resume in ASR training and Inference
@@ -787,7 +787,7 @@ if ! "${skip_train}"; then
         if "${use_ngram}"; then
             log "Stage 9: Ngram Training: train_set=${data_feats}/lm_train.txt"
             cut -f 2 -d " " ${data_feats}/lm_train.txt | lmplz -S "20%" --discount_fallback -o ${ngram_num} - >${ngram_exp}/${ngram_num}gram.arpa
-            build_binary -s ${ngram_exp}/${ngram_num}gram.arpa ${ngram_exp}/${ngram_num}gram.bin 
+            build_binary -s ${ngram_exp}/${ngram_num}gram.arpa ${ngram_exp}/${ngram_num}gram.bin
         else
             log "Stage 9: Skip ngram stages: use_ngram=${use_ngram}"
         fi

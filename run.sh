@@ -39,7 +39,8 @@ args=(
     --local_score_opts "--inference_config conf/decode/default.yaml --use_lm false"
 
     # ddp running
-    --ngpu 1 --num_nodes 8 ## DDP mode, 8X1 GPU
+    --ngpu 1 --num_nodes 1 ## DDP mode, 8X1 GPU
+    --stage 11
     # --ngpu 8 ## multi gpu mode
     # --ngpu 1 ## single gpu mode
 )
