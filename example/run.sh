@@ -9,9 +9,9 @@ train_set="train"
 valid_set="dev"
 test_sets="dev test"
 
-asr_config=conf/tuning/train_asr_conformer6_n_fft512_hop_length256_rnnt.yaml
-lm_config=conf/train_lm.yaml
-inference_config=conf/decode_asr.yaml
+asr_config=conf/example/tuning/default.yaml
+lm_config=conf/example/train_lm.yaml
+inference_config=conf/exampledecode/default.yaml
 
 # speed perturbation related
 # (train_set will be "${train_set}_sp" if speed_perturb_factors is specified)

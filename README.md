@@ -1,3 +1,10 @@
+
+```
+cp example/* .
+cp conf/example/slurm.conf conf/slurm.conf
+bash run.sh
+```
+
 # NOTES
 
 - transducer_loss will print a lot logs, which is disgusting(verbose=False may fix). JIT is used here(not necessary???)
