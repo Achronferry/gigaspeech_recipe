@@ -1,1 +1,0 @@
-/mnt/lustre/sjtu/home/xg000/asr/TEMPLATE/espnet2/cmd.sh
