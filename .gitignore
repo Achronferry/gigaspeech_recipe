@@ -9,6 +9,7 @@ conf/slurm.*.conf
 *.py[cod]
 *$py.class
 .pytest_cache/
+__pycache__/
 
 
 # Distribution / packaging
@@ -44,3 +45,9 @@ slurm-*.out
 *.log
 *.debug
 *debug.*
+
+# user-define
+/cmd.sh
+/path.sh
+/run.sh
+/db.sh
