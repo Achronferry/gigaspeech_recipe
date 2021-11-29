@@ -6,8 +6,18 @@ def setup_logging_config(verbose, prefix="", color=True):
     else:
         format=""
 
+    try:
+        import colorlog
+        from distutils.version import LooseVersion
+        if LosseVersion(colorlog.__version__) >= LosseVersion("4.7.2"):
+            from colorlog.logging import basicConfig
+        else:
+            from colorlog import basicConfig
+    except:
+        color = False
+        from logging import basicConfig
+
     if color:
-        from colorlog.logging import basicConfig
         # from espnet.asr.asr_utils import logging_once
         format+=f"%(log_color)s%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s%(reset)s"
         log_colors={
@@ -24,7 +34,7 @@ def setup_logging_config(verbose, prefix="", color=True):
         )
     else:
         format+=f"%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s"
-        logging.basicConfig(
+        basicConfig(
             level=logging.INFO,
             format=format,
         )
